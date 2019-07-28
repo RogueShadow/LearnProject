@@ -20,10 +20,10 @@ object ddos: ApplicationAdapter("DDOS WES", 800, 600){
                     var speed = 500f
                     var vel = F2()
                     override fun update(delta: Float) {
-                        if (keyHeld(KeyEvent.VK_A))vel.x = -speed * delta
-                        if (keyHeld(KeyEvent.VK_D))vel.x = speed * delta
+                        if (Input.keyHeld(KeyEvent.VK_A))vel.x = -speed * delta
+                        if (Input.keyHeld(KeyEvent.VK_D))vel.x = speed * delta
                         vel *= 0.997f
-                        parent.pos += vel
+                        parent.pos = parent.pos + vel
                     }
                 }
             }

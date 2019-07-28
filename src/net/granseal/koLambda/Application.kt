@@ -2,6 +2,7 @@ package net.granseal.koLambda
 
 import java.awt.*
 import java.awt.event.*
+import java.awt.geom.Point2D
 import java.util.logging.Level
 import java.util.logging.Logger
 import javax.swing.JFrame
@@ -33,25 +34,24 @@ abstract class Application(val title: String, val width: Int, val height: Int) {
     private var timePerFrame = 1f / fixedFPS
     private lateinit var bufferGraphics: Graphics2D
 
-    var mouseWheelDelta = 0.0
-    var mouseX = 0
-    var mouseY = 0
-
-    private var heldKeysCode = mutableMapOf<Int,Boolean>()
-
     init {
         logger.log(Level.INFO,"Initializing")
         val mouseAdapter = object: MouseAdapter(){
             override fun mouseWheelMoved(e: MouseWheelEvent) {
-                mouseWheelDelta = e.preciseWheelRotation
+                Input.mouseWheelDelta = e.preciseWheelRotation
             }
             override fun mouseDragged(e: MouseEvent) {
-                mouseX = e.x
-                mouseY = e.y
+                Input.mouse.x = e.x.toFloat()
+                Input.mouse.screenX = e.xOnScreen.toFloat()
+                Input.mouse.y = e.y.toFloat()
+                Input.mouse.screenY = e.yOnScreen.toFloat()
+
             }
             override fun mouseMoved(e: MouseEvent) {
-                mouseX = e.x
-                mouseY = e.y
+                Input.mouse.x = e.x.toFloat()
+                Input.mouse.screenX = e.xOnScreen.toFloat()
+                Input.mouse.y = e.y.toFloat()
+                Input.mouse.screenY = e.yOnScreen.toFloat()
             }
 
             override fun mouseClicked(e: MouseEvent) {
@@ -60,19 +60,21 @@ abstract class Application(val title: String, val width: Int, val height: Int) {
 
             override fun mouseReleased(e: MouseEvent) {
                 this@Application.mouseReleased(e)
+                Input.mouse.buttonsHeld[e.button] = false
             }
 
             override fun mousePressed(e: MouseEvent) {
                 this@Application.mousePressed(e)
+                Input.mouse.buttonsHeld[e.button] = true
             }
         }
         val keyAdapter = object: KeyAdapter(){
             override fun keyPressed(e: KeyEvent) {
-                heldKeysCode[e.extendedKeyCode] = true
+                Input.heldKeysCode[e.extendedKeyCode] = true
                 this@Application.keyPressed(e)
             }
             override fun keyReleased(e: KeyEvent) {
-                heldKeysCode[e.extendedKeyCode] = false
+                Input.heldKeysCode[e.extendedKeyCode] = false
                 this@Application.keyReleased(e)
             }
             override fun keyTyped(e: KeyEvent) {
@@ -170,10 +172,6 @@ abstract class Application(val title: String, val width: Int, val height: Int) {
         }
     }
 
-    fun keyHeld(c: Char) = keyHeld(KeyEvent.getExtendedKeyCodeForChar(c.toInt()))
-    fun keyHeld(code: Int) = heldKeysCode.getOrDefault(code, false)
-
-
     abstract fun init()
     abstract fun update(delta: Float)
     abstract fun draw(g: Graphics2D)
@@ -184,4 +182,22 @@ abstract class Application(val title: String, val width: Int, val height: Int) {
     abstract fun keyPressed(e: KeyEvent)
     abstract fun keyReleased(e: KeyEvent)
     abstract fun keyTyped(e: KeyEvent)
+}
+
+object Input {
+    var mouseWheelDelta = 0.0
+    var mouse = MouseStuff()
+    internal var heldKeysCode = mutableMapOf<Int,Boolean>()
+    fun keyHeld(c: Char) = keyHeld(KeyEvent.getExtendedKeyCodeForChar(c.toInt()))
+    fun keyHeld(code: Int) = heldKeysCode.getOrDefault(code, false)
+    data class MouseStuff(var x: Float = 0f, var y: Float = 0f, var screenX: Float = 0f, var screenY: Float = 0f){
+        val buttonsHeld = mutableMapOf<Int,Boolean>()
+        init {
+            buttonsHeld[MouseEvent.BUTTON1] = false
+            buttonsHeld[MouseEvent.BUTTON2] = false
+            buttonsHeld[MouseEvent.BUTTON3] = false
+        }
+        fun point() = Point2D.Float(x,y)
+        fun screenPoint() = Point2D.Float(screenX,screenY)
+    }
 }

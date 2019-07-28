@@ -2,6 +2,7 @@ package net.granseal.topDownRPGame
 
 import net.granseal.koLambda.ApplicationAdapter
 import net.granseal.koLambda.Entity
+import net.granseal.koLambda.Input
 import net.granseal.koLambda.minus
 import java.awt.Color
 import java.awt.Graphics2D
@@ -42,8 +43,7 @@ object TopDownRPGame: ApplicationAdapter("TopDownRPGame", 1280, 720) {
             }
             updaters.add {
                 if (dragging) {
-                    sceneRoot.pos.x = mouseX - dragOffset.x
-                    sceneRoot.pos.y = mouseY - dragOffset.y
+                    sceneRoot.pos = Input.mouse.point() - dragOffset
                 }
             }
         }
@@ -74,10 +74,6 @@ object TopDownRPGame: ApplicationAdapter("TopDownRPGame", 1280, 720) {
     }
 
     override fun draw(g: Graphics2D) {
-        g.addRenderingHints(mapOf(
-                Pair(KEY_ANTIALIASING,VALUE_ANTIALIAS_ON),
-                Pair(KEY_INTERPOLATION, VALUE_INTERPOLATION_BICUBIC),
-                Pair(KEY_RENDERING, VALUE_RENDER_QUALITY)))
         super.draw(g)
         g.color = Color.GREEN
         g.draw(lines)
@@ -85,13 +81,13 @@ object TopDownRPGame: ApplicationAdapter("TopDownRPGame", 1280, 720) {
 
     override fun update(delta: Float) {
         super.update(delta)
-        if (keyHeld('q')) sceneRoot.scale += delta * 10
-        if (keyHeld('e')) sceneRoot.scale -= delta * 10
+        if (Input.keyHeld('q')) sceneRoot.scale += delta * 10
+        if (Input.keyHeld('e')) sceneRoot.scale -= delta * 10
         val arm = sceneRoot.getAll().singleOrNull(){it.props["name"] == "arm"}
         if (arm != null) {
             val b = arm.getActualBounds()
 
-            if (keyHeld('r')) {
+            if (Input.keyHeld('r')) {
                 lines.reset()
                 lines.moveTo(b.centerX, b.centerY)
             }
@@ -224,19 +220,19 @@ fun makePlayer(name: String): Entity {
         }
         updaters.add{ delta ->
             if (props.getOrDefault("attacked",0f) == 0f) {
-                if (TopDownRPGame.keyHeld('d')) {
+                if (Input.keyHeld('d')) {
                     pos.x += (100 * delta);props["direction"] = 3
                 }
-                if (TopDownRPGame.keyHeld('w')) {
+                if (Input.keyHeld('w')) {
                     pos.y -= (100 * delta);props["direction"] = 0
                 }
-                if (TopDownRPGame.keyHeld('a')) {
+                if (Input.keyHeld('a')) {
                     pos.x -= (100 * delta);props["direction"] = 1
                 }
-                if (TopDownRPGame.keyHeld('s')) {
+                if (Input.keyHeld('s')) {
                     pos.y += (100 * delta);props["direction"] = 2
                 }
-                if (TopDownRPGame.keyHeld(' ')) props["attacked"] = 0.25f
+                if (Input.keyHeld(' ')) props["attacked"] = 0.25f
             }
         }
     }

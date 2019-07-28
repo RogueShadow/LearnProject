@@ -7,6 +7,9 @@ operator fun Point2D.Float.plusAssign(other: Point2D.Float) {
     x += other.x
     y += other.y
 }
+operator fun Point2D.Float.plus(other: Point2D.Float): Point2D.Float {
+    return Point2D.Float(this.x + other.x,this.y + other.y)
+}
 
 
 
@@ -22,3 +25,4 @@ operator fun Point2D.minus(other: Point2D.Float): Point2D.Float {
 fun Point.toFloat(): Point2D.Float {
     return Point2D.Float(x.toFloat(),y.toFloat())
 }
+

@@ -11,9 +11,9 @@ open class ApplicationAdapter(title: String, width: Int, height: Int): Applicati
     override fun update(delta: Float) {sceneRoot.update(delta)}
     override fun draw(g: Graphics2D) {clear();sceneRoot.draw(g)}
     override fun dispose() {}
-    override fun mousePressed(e: MouseEvent) {}
-    override fun mouseClicked(e: MouseEvent) {sceneRoot.click(e.point)}
-    override fun mouseReleased(e: MouseEvent) {}
+    override fun mousePressed(e: MouseEvent) {sceneRoot.click(e)}
+    override fun mouseClicked(e: MouseEvent) {sceneRoot.click(e)}
+    override fun mouseReleased(e: MouseEvent) {sceneRoot.click(e)}
     override fun keyPressed(e: KeyEvent) {
         if (e.keyCode == KeyEvent.VK_ESCAPE){
             close()

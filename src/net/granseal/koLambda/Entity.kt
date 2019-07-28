@@ -1,19 +1,21 @@
 package net.granseal.koLambda
 
 import java.awt.*
+import java.awt.event.MouseEvent
 import java.awt.geom.AffineTransform
 import java.awt.geom.Point2D
 import java.awt.geom.Rectangle2D
 
 open class Entity(var pos: Point2D.Float = Point2D.Float()) {
     var bounds: Rectangle2D = Rectangle()
+    var active = false
     val components = mutableListOf<Component>()
     var parent: Entity? = null
     val props = mutableMapOf<String,Any>()
     val children = mutableListOf<Entity>()
     val updaters = mutableListOf<Entity.(Float) -> Unit>()
     val drawers = mutableListOf<Entity.(Graphics2D) -> Unit>()
-    var clickHandler: ((Point2D.Float) -> Boolean)? = null
+    var clickHandler: ((MouseEvent) -> Boolean)? = null
     var scale = 1.0
     var rotation = 0.0
     var transform = AffineTransform()
@@ -71,19 +73,17 @@ open class Entity(var pos: Point2D.Float = Point2D.Float()) {
         return entities
     }
 
-    fun click(clicked: Point2D) = click(Point2D.Float(clicked.x.toFloat(),clicked.y.toFloat()))
-
-    fun click(clicked: Point2D.Float): Boolean {
+    fun click(event: MouseEvent): Boolean {
         val entities = getAll()
         val filtered = entities.filter {
-            val worldClicked = it.getWorldTransform().inverseTransform(clicked,null)
+            val worldClicked = it.getWorldTransform().inverseTransform(event.point,null)
             it.bounds.contains(worldClicked)
         }
-        var handled = false
 
+        var handled = false
         filtered.reversed().forEach {
             if (it.clickHandler != null && !handled){
-                handled = it.clickHandler?.invoke(clicked)!!
+                handled = it.clickHandler?.invoke(event)!!
             }
         }
 
