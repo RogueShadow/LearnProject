@@ -1,8 +1,5 @@
 package net.granseal.angles
 
-import net.granseal.koLambda.ApplicationAdapter
-import net.granseal.koLambda.Entity
-import net.granseal.koLambda.toFloat
 import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.Point
@@ -10,6 +7,7 @@ import java.awt.Rectangle
 import java.awt.event.MouseEvent
 import java.awt.geom.GeneralPath
 import java.awt.geom.Point2D.Float as F2
+import net.granseal.koLambda.*
 
 fun main(){
     angles.start()

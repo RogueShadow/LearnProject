@@ -1,20 +1,14 @@
 package net.granseal.topDownRPGame
 
-import net.granseal.koLambda.ApplicationAdapter
-import net.granseal.koLambda.Entity
-import net.granseal.koLambda.Input
-import net.granseal.koLambda.minus
+import net.granseal.koLambda.*
 import java.awt.Color
 import java.awt.Graphics2D
-import java.awt.Rectangle
-import java.awt.RenderingHints
 import java.awt.event.KeyEvent
 import java.awt.event.MouseEvent
 import java.awt.geom.GeneralPath
 import java.io.File
 import javax.imageio.ImageIO
 import java.awt.geom.Point2D.Float as F2
-import java.awt.RenderingHints.*
 
 
 object TopDownRPGame: ApplicationAdapter("TopDownRPGame", 1280, 720) {
@@ -124,7 +118,6 @@ fun randArmCfg(len: Int): Array<Pair<Float,Float>> {
     return cfg.toTypedArray()
 }
 
-fun rColor() = Color(Math.random().toFloat(),Math.random().toFloat(),Math.random().toFloat())
 
 fun generateArm(position: F2, axisCfg: Array<Pair<Float,Float>>): Entity {
 
@@ -176,10 +169,10 @@ fun makePlayer(name: String): Entity {
         props["color"] = Color.GREEN
 
         clickHandler = {
-            props["color"] = Color(Math.random().toFloat(),Math.random().toFloat(),Math.random().toFloat())
+            props["color"] = rColor()
             true
         }
-        bounds = Rectangle(-8,-8,16,16)
+        bounds = rect(-8f,-8f,16f,16f)
 
         //Draws player body.
         drawers.add{
@@ -220,19 +213,19 @@ fun makePlayer(name: String): Entity {
         }
         updaters.add{ delta ->
             if (props.getOrDefault("attacked",0f) == 0f) {
-                if (Input.keyHeld('d')) {
+                if (keyDown('d')) {
                     pos.x += (100 * delta);props["direction"] = 3
                 }
-                if (Input.keyHeld('w')) {
+                if (keyDown('w')) {
                     pos.y -= (100 * delta);props["direction"] = 0
                 }
-                if (Input.keyHeld('a')) {
+                if (keyDown('a')) {
                     pos.x -= (100 * delta);props["direction"] = 1
                 }
-                if (Input.keyHeld('s')) {
+                if (keyDown('s')) {
                     pos.y += (100 * delta);props["direction"] = 2
                 }
-                if (Input.keyHeld(' ')) props["attacked"] = 0.25f
+                if (keyDown(' ')) props["attacked"] = 0.25f
             }
         }
     }
@@ -245,7 +238,7 @@ fun block(color: Color, position: F2): Entity {
     e.props["solid"] = true
     e.pos = position
 
-    e.bounds = Rectangle(-16,-16,32,32)
+    e.bounds = rect(-16f,-16f,32f,32f)
 
     e.drawers.add{
         it.color = if (props.getOrDefault("colliding",false) as Boolean)  Color.RED else props["color"] as Color

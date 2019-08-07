@@ -2,8 +2,8 @@ package net.granseal.random
 
 import net.granseal.koLambda.*
 import java.awt.Color
-import java.awt.event.KeyEvent
 import java.awt.geom.Point2D.Float as F2
+import java.awt.event.KeyEvent.*
 
 fun main() = ddos.start()
 
@@ -20,8 +20,8 @@ object ddos: ApplicationAdapter("DDOS WES", 800, 600){
                     var speed = 500f
                     var vel = F2()
                     override fun update(delta: Float) {
-                        if (Input.keyHeld(KeyEvent.VK_A))vel.x = -speed * delta
-                        if (Input.keyHeld(KeyEvent.VK_D))vel.x = speed * delta
+                        if (keyDown(VK_A))vel.x = -speed * delta
+                        if (keyDown(VK_D))vel.x = speed * delta
                         vel *= 0.997f
                         parent.pos = parent.pos + vel
                     }

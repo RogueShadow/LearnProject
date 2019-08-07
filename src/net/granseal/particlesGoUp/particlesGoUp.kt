@@ -1,9 +1,7 @@
 package net.granseal.particlesGoUp
-import net.granseal.koLambda.ApplicationAdapter
-import net.granseal.koLambda.Entity
+
+import net.granseal.koLambda.*
 import java.awt.Color
-import java.awt.MultipleGradientPaint
-import java.awt.color.ColorSpace
 
 // Program Entry Point.  Extend the ApplicationAdapter class, and call the .start() method to get going.
 fun main() = particlesGoUp.start()
